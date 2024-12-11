@@ -8,7 +8,8 @@ import * as Haptics from 'expo-haptics';
 
 const { width } = Dimensions.get('window');
 
-const ChildHome: React.FC<{ navigation: any }> = ({ navigation }) => {
+const ChildHome: React.FC<{ navigation: any; route:any }> = ({ navigation, route }) => {
+  const {childName} = route.params;
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -63,7 +64,7 @@ const ChildHome: React.FC<{ navigation: any }> = ({ navigation }) => {
           <Ionicons name="arrow-back" size={24} color="#4CAF50" />
         </TouchableOpacity>
         <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-          <KidTop />
+          <KidTop name={childName} />
           <ScrollView contentContainerStyle={styles.buttonContainer}>
             {menuItems.map((item, index) => (
               <TouchableOpacity
@@ -90,7 +91,7 @@ const ChildHome: React.FC<{ navigation: any }> = ({ navigation }) => {
   );
 };
 
-const KidTop: React.FC = () => {
+const KidTop: React.FC <{name:string}> = ({name}) => {
   const currentDate = formatDate(new Date());
   return (
     <View style={styles.topContainer}>
@@ -103,7 +104,7 @@ const KidTop: React.FC = () => {
           source={require('../assets/img/ellipse-52.png')}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.greeting}>Hello, Sophia</Text>
+          <Text style={styles.greeting}>Hello,{name}</Text>
           <Text style={styles.date}>{currentDate}</Text>
         </View>
       </LinearGradient>
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 19,
     fontFamily: 'Poppins_700Bold',
     color: '#FFFFFF',
   },
