@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import {
   StyleSheet,
   Text,
@@ -25,6 +25,7 @@ const formatDate = (date: Date) => {
 };
 
 interface Patient {
+  birthDate: ReactNode;
   id: string;
   name: string;
   index: string;
@@ -63,8 +64,13 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
   const fetchPatients = async () => {
     try {
       const response = await axios.get('/auth/doctor-child-profiles');
-      const data: Patient[] = response.data;
-      setPatients(data);
+      const data = response.data;
+      const formattedPatients = data.map((child: { id: any; fullName: any; birthDate: any; }) => ({
+        id: child.id,
+        name: child.fullName,
+        birthDate: child.birthDate,
+      }));
+      setPatients(formattedPatients);
     } catch (error) {
       console.error('Error fetching patients:', error);
     } finally {
@@ -80,7 +86,7 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
     <TouchableOpacity
       style={styles.patientCard}
       activeOpacity={0.7}
-      onPress={() => navigation.navigate('KidProfDoc', { patientId: item.id })}
+      onPress={() => navigation.navigate('KidProfDoc', { patientId: item.id, patientName: item.name})}
     >
       <LinearGradient
         colors={['#4c669f', '#3b5998', '#192f6a']}
@@ -92,11 +98,7 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
         />
         <View style={styles.patientInfo}>
           <Text style={styles.patientName}>{item.name}</Text>
-          <Text style={styles.patientIndex}>{item.index}</Text>
-          <Text style={styles.patientLastVisit}>Last visit: {item.lastVisit}</Text>
-          <View style={styles.patientConditionContainer}>
-            <Text style={styles.patientCondition}>{item.condition}</Text>
-          </View>
+          <Text style={styles.patientIndex}>Birth Date{item.birthDate}</Text>
         </View>
       </LinearGradient>
     </TouchableOpacity>
@@ -118,11 +120,6 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
           />
           <View style={styles.doctorInfo}>
             <Text style={styles.doctorName}>{doctorInfo.name}</Text>
-            {doctorInfo.credentials.map((cred, index) => (
-              <Text key={index} style={styles.doctorCredentials}>
-                {cred}
-              </Text>
-            ))}
             <Text style={styles.currentDate}>{formatDate(new Date())}</Text>
           </View>
           <TouchableOpacity onPress={() => setIsMenuVisible(true)} style={styles.menuButton}>
@@ -145,10 +142,11 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
           <View style={styles.statItem}>
             <MaterialCommunityIcons name="account-group" size={24} color="#4c669f" />
             <Text style={styles.statNumber}>{patients.length}</Text>
-            <Text style={styles.statLabel}>Total Patients</Text>
+            <Text style={styles.statLabel}>Total Children</Text>
           </View>
         </View>
         <Text style={styles.sectionTitle}>Child Profiles</Text>
+        <TouchableOpacity>
         {loading ? (
           <ActivityIndicator size="large" color="#4c669f" style={styles.loader} />
         ) : (
@@ -159,6 +157,7 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
             contentContainerStyle={styles.patientList}
           />
         )}
+        </TouchableOpacity>
       </View>
       <Modal
         visible={isMenuVisible}
