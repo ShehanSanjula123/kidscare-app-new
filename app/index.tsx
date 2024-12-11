@@ -12,6 +12,9 @@ import ForgotPassword from './ForgotPassword';
 import KidProf from './KidProf';
 import BMICalculator from './BMI';
 import ChildHome from './ChildHome';
+import KidProfDoc from './KidProfDoc';
+import Announcement from './Announcement';
+import KidAllergy from './KidAllergy';
 
 
 const Stack = createStackNavigator();
@@ -34,6 +37,9 @@ const index = () => {
       <Stack.Screen name='KidProf' component={KidProf}/>
       <Stack.Screen name='BMI' component={BMICalculator}/>
       <Stack.Screen name='ChildHome' component={ChildHome}/>
+      <Stack.Screen name="KidProfDoc" component={KidProfDoc} />
+      <Stack.Screen name='Announcements' component={Announcement} />
+      <Stack.Screen name='KidAllergy' component={KidAllergy}/>
     </Stack.Navigator>
  
   )
