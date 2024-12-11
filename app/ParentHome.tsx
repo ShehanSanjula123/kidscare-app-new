@@ -8,6 +8,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-na
 import { BlurView } from 'expo-blur'
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins'
 import api from './axiosConfig'
+import Footer from '@/components/Footer'
 
 const { width, height } = Dimensions.get('window')
 
@@ -114,6 +115,7 @@ const ParentHome: React.FC<{ navigation: any }> = ({ navigation }) => {
           </TouchableOpacity>
         </BlurView>
       )}
+      <Footer/>
     </View>
   )
 }

@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { StatusBar } from 'expo-status-bar';
 import api from './axiosConfig'; // Import the configured axios instance
+import Footer from '@/components/Footer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -124,6 +125,7 @@ const VacDetails: React.FC<{ navigation: any }> = ({ navigation }) => {
       >
         <Ionicons name="arrow-back" size={24} color="#4CAF50" />
       </TouchableOpacity>
+      <Footer/>
     </View>
   );
 };

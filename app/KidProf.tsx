@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import api from './axiosConfig'
+import Footer from '@/components/Footer'
 
 const { width, height } = Dimensions.get('window')
 
@@ -90,6 +91,7 @@ const KidProf: React.FC<{ navigation: any }> = ({ navigation }) => {
       >
         <Ionicons name="arrow-back" size={24} color="#fff" />
       </TouchableOpacity>
+      <Footer/>
     </View>
   )
 }
@@ -110,7 +112,7 @@ const ParentTop = ({ parentName }: { parentName: string }) => {
 const KidProfileBox: React.FC<{ profile: KidProfile; navigation: any }> = ({ profile, navigation }) => {
   const [selectedChildName, setSelectedChildName] = useState("");
   const handlePress = () => {
-    navigation.navigate('ChildHome', { childName: selectedChildName });
+    navigation.navigate('ChildHome', { childName: profile.fullName  });
  // Pass the profile data to ChildHome
   };
   return (
