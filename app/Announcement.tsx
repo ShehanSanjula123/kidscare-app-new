@@ -27,7 +27,7 @@ const Announcement: React.FC = () => {
       onPress={() => setSelectedAnnouncement(item)}
     >
       <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={['#2196F3', '#64B5F6']}
         style={styles.gradientBackground}
       >
         <Text style={styles.announcementTitle}>{item.title}</Text>
@@ -41,7 +41,7 @@ const Announcement: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#4c669f', '#3b5998', '#192f6a']}
+        colors={['#2196F3', '#64B5F6']}
         style={styles.header}
       >
         <Text style={styles.headerTitle}>Announcements</Text>
