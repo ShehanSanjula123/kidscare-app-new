@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as SecureStore from 'expo-secure-store'; // Import SecureStore for secure token storage
 
 // Create an instance of axios
 const api = axios.create({
@@ -8,14 +9,22 @@ const api = axios.create({
 // Add a request interceptor to include the token
 api.interceptors.request.use(
   async (config) => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkiLCJ1c2VyTmFtZSI6IlN1cGlwaSIsInVzZXJUeXBlIjoiUEFSRU5UIiwibmljTm8iOiIxMjM0NTY3ODkiLCJpYXQiOjE3MzQxMTI4ODYsImV4cCI6MTczNDExMzQ4Nn0.Q_uOgPXEqqe544dzTsXNLgYjA03cJCg5lnYNzcmTXlM'; // Replace with actual token retrieval logic
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      // Retrieve the token from SecureStore
+      const checkUser = await SecureStore.getItemAsync('jwtToken');
+
+      if (checkUser) {
+        // Attach the token as a Bearer token in the Authorization header
+        config.headers.Authorization = `Bearer ${checkUser}`;
+      }
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+      // Optionally handle token retrieval errors (e.g., log out user or show an error)
     }
     return config;
   },
   (error) => {
-    // Handle the error
+    // Handle errors that occur before the request is sent
     return Promise.reject(error);
   }
 );
