@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import api from './axiosConfig'
 import Footer from '@/components/Footer'
@@ -105,6 +105,7 @@ const ParentTop = ({ parentName }: { parentName: string }) => {
         <Text style={styles.greeting}>Hello, {parentName}</Text>
         <Text style={styles.date}>{currentDate}</Text>
       </View>
+      
     </View>
   )
 }
@@ -116,19 +117,22 @@ const KidProfileBox: React.FC<{ profile: KidProfile; navigation: any }> = ({ pro
  // Pass the profile data to ChildHome
   };
   return (
-    <TouchableOpacity style={styles.kidProfileBox}onPress={handlePress}>
+    
+    <TouchableOpacity style={styles.kidProfileBar} onPress={handlePress}>
+      
       <LinearGradient
         colors={['#4CAF50', '#2196F3']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.kidProfileGradient}
       >
-        
-        <Image style={styles.image} source={require('../assets/img/profile.png')} />
-        <Text style={styles.kidProfileName}>{profile.fullName}</Text>
-        <Text style={styles.kidProfileAge}>
-          Gender: {profile.gender} | Born: {formatDate(profile.birthDate)}
-        </Text>
+        <Image style={styles.kidProfileImage} source={require('../assets/img/profile.png')} />
+        <View style={styles.kidProfileInfo}>
+          <Text style={styles.kidProfileName}>{profile.fullName}</Text>
+          <Text style={styles.kidProfileAge}>
+            Gender: {profile.gender} | Born: {formatDate(profile.birthDate)}
+          </Text>
+        </View>
       </LinearGradient>
     </TouchableOpacity>
   )
@@ -159,11 +163,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
-  image:{
-    width: 80,
-    height: 80,
-    marginBottom:10,
-  },
   profileImage: {
     width: 80,
     height: 80,
@@ -180,57 +179,54 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#2196F3',
   },
-  title:{
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#2196F3',
-  },
   date: {
     fontSize: 16,
     color: '#4CAF50',
     marginTop: 5,
   },
+  totalProfiles: {
+    fontSize: 16,
+    color: '#2196F3',
+    marginTop: 5,
+  },
   profilesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
     padding: 10,
     marginTop: 20,
   },
-  kidProfileBox: {
-    width: width * 0.49,
-    aspectRatio: 0.9,
-    margin: 10,
-    borderRadius: 20,
+  kidProfileBar: {
+    width: '100%',
+    height: 80,
+    marginBottom: 10,
+    borderRadius: 10,
     overflow: 'hidden',
     elevation: 5,
     shadowColor: '#000',
   },
   kidProfileGradient: {
     flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
   },
   kidProfileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
-    borderWidth: 3,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 10,
+    borderWidth: 2,
     borderColor: '#FFF',
+  },
+  kidProfileInfo: {
+    flex: 1,
   },
   kidProfileName: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 5,
   },
   kidProfileAge: {
     color: '#FFF',
     fontSize: 14,
-    textAlign: 'center',
   },
   loadingIndicator: {
     marginTop: 20,
@@ -250,6 +246,26 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
   },
+  statItem: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 15,
+    elevation: 3,
+    width: (width - 60) / 3,
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 5,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 5,
+  },
 })
 
 export default KidProf
+
