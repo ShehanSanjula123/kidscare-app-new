@@ -15,6 +15,7 @@ import ChildHome from './ChildHome';
 import KidProfDoc from './KidProfDoc';
 import Announcement from './Announcement';
 import KidAllergy from './KidAllergy';
+import VaccineSchedule from './VaccineShedule';
 
 
 const Stack = createStackNavigator();
@@ -40,6 +41,7 @@ const index = () => {
       <Stack.Screen name="KidProfDoc" component={KidProfDoc} />
       <Stack.Screen name='Announcements' component={Announcement} />
       <Stack.Screen name='KidAllergy' component={KidAllergy}/>
+      <Stack.Screen name='VacShedule' component={VaccineSchedule}/>
     </Stack.Navigator>
  
   )
