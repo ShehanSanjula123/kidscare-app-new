@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  TextInput,
   ScrollView,
-  TouchableOpacity,
   Animated,
   Dimensions,
 } from 'react-native';
@@ -14,6 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import CFooter from '@/components/CFooter';
 
 const { width } = Dimensions.get('window');
 
@@ -24,9 +23,21 @@ const formatDate = (date: Date) => {
 
 const currentDate = formatDate(new Date());
 
+// Mock API call
+const fetchHealthData = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        allergies: ['Peanuts', 'Dust mites', 'Penicillin'],
+        diseases: ['Asthma', 'Eczema']
+      });
+    }, 1000);
+  });
+};
+
 const KidAllergy: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const [allergies, setAllergies] = useState('');
-  const [diseases, setDiseases] = useState('');
+  const [healthData, setHealthData] = useState({ allergies: [], diseases: [] });
+  const [loading, setLoading] = useState(true);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   const [fontsLoaded] = useFonts({
@@ -34,6 +45,21 @@ const KidAllergy: React.FC<{ navigation: any }> = ({ navigation }) => {
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchHealthData();
+        setHealthData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching health data:', error);
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -67,37 +93,37 @@ const KidAllergy: React.FC<{ navigation: any }> = ({ navigation }) => {
       </LinearGradient>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Allergies of the child</Text>
-              <MaterialCommunityIcons name="allergy" size={24} color='#2196F3'/>
-            </View>
-            <TextInput
-              style={styles.input}
-              multiline
-              placeholder="Enter allergies here..."
-              value={allergies}
-              onChangeText={setAllergies}
-            />
-          </View>
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Congenital diseases of the child</Text>
-              <MaterialCommunityIcons name="dna" size={24} color="#2196F3" />
-            </View>
-            <TextInput
-              style={styles.input}
-              multiline
-              placeholder="Enter congenital diseases here..."
-              value={diseases}
-              onChangeText={setDiseases}
-            />
-          </View>
-          <TouchableOpacity style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Save Information</Text>
-          </TouchableOpacity>
+          {loading ? (
+            <Text style={styles.loadingText}>Loading health data...</Text>
+          ) : (
+            <>
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Allergies of the child</Text>
+                  <MaterialCommunityIcons name="allergy" size={24} color='#2196F3'/>
+                </View>
+                <View style={styles.infoContainer}>
+                  {healthData.allergies.map((allergy, index) => (
+                    <Text key={index} style={styles.infoText}>• {allergy}</Text>
+                  ))}
+                </View>
+              </View>
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Congenital diseases of the child</Text>
+                  <MaterialCommunityIcons name="dna" size={24} color="#2196F3" />
+                </View>
+                <View style={styles.infoContainer}>
+                  {healthData.diseases.map((disease, index) => (
+                    <Text key={index} style={styles.infoText}>• {disease}</Text>
+                  ))}
+                </View>
+              </View>
+            </>
+          )}
         </Animated.View>
       </ScrollView>
+      <CFooter/>
     </View>
   );
 };
@@ -154,32 +180,27 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     color: '#333',
   },
-  input: {
+  infoContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
-    fontSize: 16,
-    fontFamily: 'Poppins_400Regular',
-    minHeight: 120,
-    textAlignVertical: 'top',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  saveButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  saveButtonText: {
-    color: '#fff',
+  infoText: {
     fontSize: 16,
-    fontFamily: 'Poppins_600SemiBold',
+    fontFamily: 'Poppins_400Regular',
+    color: '#333',
+    marginBottom: 5,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
+    color: '#666',
+    textAlign: 'center',
   },
 });
 
