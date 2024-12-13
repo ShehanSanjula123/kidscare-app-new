@@ -1,27 +1,41 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Animated, Dimensions, Platform, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { Ionicons } from '@expo/vector-icons';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
-import * as Haptics from 'expo-haptics';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
-const KidAllergy: React.FC<{ navigation: any; route: any }> = ({ navigation, route }) => {
-  const { childName } = route.params;
+const formatDate = (date: Date) => {
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString(undefined, options);
+};
+
+const currentDate = formatDate(new Date());
+
+const KidAllergy: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [allergies, setAllergies] = useState('');
   const [diseases, setDiseases] = useState('');
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
+  React.useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
@@ -33,189 +47,139 @@ const KidAllergy: React.FC<{ navigation: any; route: any }> = ({ navigation, rou
     return null;
   }
 
-  const handleBackPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.goBack();
-  };
-
-  const handleSave = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    // Here you would typically save the data to your backend or local storage
-    console.log('Allergies:', allergies);
-    console.log('Diseases:', diseases);
-    // You can add a confirmation message or navigate back
-  };
-
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
-      <LinearGradient
-        colors={['#E3F2FD', '#FFFFFF']}
-        style={styles.gradient}
-      >
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBackPress}
-        >
-          <Ionicons name="arrow-back" size={24} color="#4CAF50" />
-        </TouchableOpacity>
-        <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
-            <KidTop name={childName} />
-            <View style={styles.contentContainer}>
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Allergies</Text>
-                <TextInput
-                  style={styles.input}
-                  multiline
-                  numberOfLines={4}
-                  value={allergies}
-                  onChangeText={setAllergies}
-                  placeholder="Enter any allergies here..."
-                  placeholderTextColor="#A0A0A0"
-                />
-              </View>
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Congenital Diseases</Text>
-                <TextInput
-                  style={styles.input}
-                  multiline
-                  numberOfLines={4}
-                  value={diseases}
-                  onChangeText={setDiseases}
-                  placeholder="Enter any congenital diseases here..."
-                  placeholderTextColor="#A0A0A0"
-                />
-              </View>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <LinearGradient
-                  colors={['#4CAF50', '#45a049']}
-                  style={styles.saveButtonGradient}
-                >
-                  <Text style={styles.saveButtonText}>Save</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </Animated.View>
-      </LinearGradient>
-    </View>
-  );
-};
-
-const KidTop: React.FC<{ name: string }> = ({ name }) => {
-  const currentDate = formatDate(new Date());
-  return (
-    <View style={styles.topContainer}>
+      <StatusBar style="light" />
       <LinearGradient
         colors={['#2196F3', '#64B5F6']}
-        style={styles.greetingGradient}
+        style={styles.header}
       >
-        <Ionicons name="medical" size={40} color="#FFFFFF" />
-        <View style={styles.textContainer}>
-          <Text style={styles.greeting}>{name}'s Health Info</Text>
-          <Text style={styles.date}>{currentDate}</Text>
+        <View style={styles.profileContainer}>
+          <Image
+            style={styles.profileImage}
+            source={require('../assets/img/ellipse-52.png')}
+          />
+          <View>
+            <Text style={styles.greeting}>Hello, baby</Text>
+            <Text style={styles.date}>{currentDate}</Text>
+          </View>
         </View>
       </LinearGradient>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Allergies of the child</Text>
+              <MaterialCommunityIcons name="allergy" size={24} color='#2196F3'/>
+            </View>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder="Enter allergies here..."
+              value={allergies}
+              onChangeText={setAllergies}
+            />
+          </View>
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Congenital diseases of the child</Text>
+              <MaterialCommunityIcons name="dna" size={24} color="#2196F3" />
+            </View>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder="Enter congenital diseases here..."
+              value={diseases}
+              onChangeText={setDiseases}
+            />
+          </View>
+          <TouchableOpacity style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save Information</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </ScrollView>
     </View>
   );
-};
-
-const formatDate = (date: Date) => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString(undefined, options);
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f0f0f0',
   },
-  gradient: {
-    flex: 1,
+  header: {
     paddingTop: 60,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  topContainer: {
+    paddingBottom: 20,
     paddingHorizontal: 20,
-    marginBottom: 40,
   },
-  greetingGradient: {
+  profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  textContainer: {
-    marginLeft: 20,
+  profileImage: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    marginRight: 15,
   },
   greeting: {
-    fontSize: 19,
-    fontFamily: 'Poppins_700Bold',
-    color: '#FFFFFF',
+    fontSize: 18,
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#fff',
   },
   date: {
     fontSize: 14,
     fontFamily: 'Poppins_400Regular',
-    color: '#FFFFFF',
+    color: '#fff',
     opacity: 0.8,
   },
-  contentContainer: {
-    paddingHorizontal: 20,
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  content: {
+    padding: 20,
   },
   section: {
     marginBottom: 20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
     fontFamily: 'Poppins_600SemiBold',
     color: '#333',
-    marginBottom: 10,
   },
   input: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
     fontSize: 16,
     fontFamily: 'Poppins_400Regular',
-    color: '#333',
-    minHeight: 100,
+    minHeight: 120,
     textAlignVertical: 'top',
-  },
-  saveButton: {
-    marginTop: 20,
-    borderRadius: 10,
-    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  saveButtonGradient: {
+  saveButton: {
+    backgroundColor: '#2196F3',
     paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
+    marginTop: 20,
   },
   saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 16,
     fontFamily: 'Poppins_600SemiBold',
-  },
-  backButton: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 30,
-    left: 20,
-    zIndex: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 20,
-    padding: 8,
   },
 });
 

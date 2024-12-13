@@ -47,8 +47,8 @@ const ChildHome: React.FC<{ navigation: any; route:any }> = ({ navigation, route
 
   const handlePress = (screen: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate(screen);
-  };
+    navigation.navigate(screen,  { childName: childName.fullName  });
+  }; 
 
   return (
     <View style={styles.container}>
