@@ -16,6 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import axios from './axiosConfig';
+import * as SecureStore from 'expo-secure-store';
 
 const { width } = Dimensions.get('window');
 
@@ -104,8 +105,9 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Implement logout logic here
+    await SecureStore.deleteItemAsync('jwtToken');
     navigation.replace('Login');
   };
 

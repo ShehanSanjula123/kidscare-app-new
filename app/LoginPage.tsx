@@ -17,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BlurView } from 'expo-blur';
@@ -38,6 +38,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const buttonScale = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation<LoginScreenNavigationProp>();
@@ -68,8 +69,9 @@ export default function LoginScreen() {
       const { accessToken, nicNo, userName, userType } = response.data;
 
       if (accessToken && userType) {
-        await AsyncStorage.setItem('accessToken', accessToken);
-
+        // Save token securely using expo-secure-store
+        await SecureStore.setItemAsync('jwtToken', accessToken);
+        
         if (userType === 'PARENT') {
           navigation.navigate('parentHome', { nicNo, userName, userType });
         } else if (userType === 'DOCTOR') {
@@ -78,7 +80,7 @@ export default function LoginScreen() {
           Alert.alert('Error', 'Unknown user type');
         }
       } else {
-        Alert.alert('Login Failed', 'Invalid credentials or user type');
+        Alert.alert('Login Failed', 'Invalid credentials or user type' + response.data);
       }
     } catch (error) {
       console.error(error);
@@ -92,9 +94,15 @@ export default function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
         <StatusBar style="dark" />
-        <LinearGradient colors={['#F0F4F8', '#E2E8F0', '#CBD5E0']} style={styles.gradient}>
+        <LinearGradient
+          colors={['#F0F4F8', '#E2E8F0', '#CBD5E0']}
+          style={styles.gradient}
+        >
           <Animated.View style={[styles.loginContainer, { opacity: fadeAnim }]}>
             <BlurView intensity={10} tint="light" style={styles.blurContainer}>
               <Text style={styles.title}>Welcome Back</Text>
@@ -119,7 +127,11 @@ export default function LoginScreen() {
                   onChangeText={setPassword}
                 />
                 <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                  <Ionicons name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'} size={24} color="#4A5568" />
+                  <Ionicons
+                    name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+                    size={24}
+                    color="#4A5568"
+                  />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -128,7 +140,9 @@ export default function LoginScreen() {
                 onPress={handleLogin}
                 activeOpacity={0.8}
               >
-                <Animated.View style={[styles.button, { transform: [{ scale: buttonScale }] }]}>
+                <Animated.View
+                  style={[styles.button, { transform: [{ scale: buttonScale }] }]}
+                >
                   <Text style={styles.buttonText}>Login</Text>
                 </Animated.View>
               </TouchableOpacity>
@@ -146,6 +160,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  
   container: { 
     flex: 1 
   },

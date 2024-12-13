@@ -9,6 +9,7 @@ import { BlurView } from 'expo-blur'
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins'
 import api from './axiosConfig'
 import Footer from '@/components/Footer'
+import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('window')
 
@@ -54,6 +55,7 @@ const ParentHome: React.FC<{ navigation: any }> = ({ navigation }) => {
   })
 
   const handleLogout = async () => {
+    await SecureStore.deleteItemAsync('jwtToken');
     navigation.replace('Login'); // Redirect to login screen
   };
 
