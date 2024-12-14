@@ -43,7 +43,7 @@ const ChildHome: React.FC<{ navigation: any; route:any }> = ({ navigation, route
   const menuItems = [
     { title: 'Allergies & Congenital Diseases', icon: 'medical', screen: 'KidAllergy', color: '#4CAF50' },
     { title: 'Vaccination Schedule', icon: 'calendar', screen: 'VacShedule', color: '#4CAF50' },
-    { title: 'Medical Records', icon: 'document-text', screen: 'KidRecords', color: '#4CAF50' },
+    { title: 'Medical Records', icon: 'document-text', screen: 'MRecordsPChild', color: '#4CAF50' },
     { title: 'BMI Chart', icon: 'stats-chart', screen: 'BMI', color: '#4CAF50' },
   ];
 

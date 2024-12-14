@@ -89,7 +89,7 @@ const KidProf: React.FC<{ navigation: any }> = ({ navigation }) => {
         style={styles.backButton}
         onPress={() => navigation.navigate('parentHome')}
       >
-        <Ionicons name="arrow-back" size={24} color="#fff" />
+        <Ionicons name="arrow-back" size={24} color="#4CAF50" />
       </TouchableOpacity>
       <Footer/>
     </View>
@@ -239,10 +239,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 50,
+    top: Platform.OS === 'ios' ? 60 : 30,
     left: 20,
     zIndex: 10,
-    backgroundColor: 'rgba(33, 150, 243, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 20,
     padding: 8,
   },
