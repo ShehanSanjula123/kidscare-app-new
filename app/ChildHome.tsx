@@ -9,7 +9,9 @@ import * as Haptics from 'expo-haptics';
 const { width } = Dimensions.get('window');
 
 const ChildHome: React.FC<{ navigation: any; route:any }> = ({ navigation, route }) => {
+  const {parentNic} = route.params;
   const {childName} = route.params;
+  const {childId} = route.params;
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -47,7 +49,7 @@ const ChildHome: React.FC<{ navigation: any; route:any }> = ({ navigation, route
 
   const handlePress = (screen: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate(screen,  { childName: childName.fullName  });
+    navigation.navigate(screen,  { childId ,parentNic});
   }; 
 
   return (

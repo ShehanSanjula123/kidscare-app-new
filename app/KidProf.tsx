@@ -113,7 +113,7 @@ const ParentTop = ({ parentName }: { parentName: string }) => {
 const KidProfileBox: React.FC<{ profile: KidProfile; navigation: any }> = ({ profile, navigation }) => {
   const [selectedChildName, setSelectedChildName] = useState("");
   const handlePress = () => {
-    navigation.navigate('ChildHome', { childName: profile.fullName  });
+    navigation.navigate('ChildHome', { childName: profile.fullName , childId:profile.id });
  // Pass the profile data to ChildHome
   };
   return (

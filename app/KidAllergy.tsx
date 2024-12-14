@@ -1,129 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Animated,
-  Dimensions,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, StyleSheet, ActivityIndicator, FlatList, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import CFooter from '@/components/CFooter';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import api from './axiosConfig';
 
-const { width } = Dimensions.get('window');
-
-const formatDate = (date: Date) => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString(undefined, options);
-};
-
-const currentDate = formatDate(new Date());
-
-// Mock API call
-const fetchHealthData = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        allergies: ['Peanuts', 'Dust mites', 'Penicillin'],
-        diseases: ['Asthma', 'Eczema']
-      });
-    }, 1000);
-  });
-};
-
-const KidAllergy: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const [healthData, setHealthData] = useState({ allergies: [], diseases: [] });
+const KidAllergy: React.FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
+  const { childId } = route.params; // Retrieve childId from route params
+  const [data, setData] = useState({ allergies: '', bornDiseases: '' });
   const [loading, setLoading] = useState(true);
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
-
-  const [fontsLoaded] = useFonts({
-    Poppins_400Regular,
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-  });
 
   useEffect(() => {
-    const loadData = async () => {
+    // Fetch data from the backend
+    const fetchData = async () => {
       try {
-        const data = await fetchHealthData();
-        setHealthData(data);
-        setLoading(false);
+        const response = await api.get(`/auth/child-profile/${childId}`);
+        const childProfile = response.data;
+
+        if (childProfile) {
+          setData({
+            allergies: childProfile.alergies || 'No allergies specified',
+            bornDiseases: childProfile.bornDiseases || 'No diseases specified',
+          });
+        } else {
+          console.error('Child profile not found.');
+        }
       } catch (error) {
-        console.error('Error fetching health data:', error);
+        console.error('Error fetching data:', error);
+      } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, []);
+    fetchData();
+  }, [childId]);
 
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
-      <LinearGradient
-        colors={['#2196F3', '#64B5F6']}
-        style={styles.header}
-      >
-        <View style={styles.profileContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require('../assets/img/ellipse-52.png')}
-          />
-          <View>
-            <Text style={styles.greeting}>Hello, baby</Text>
-            <Text style={styles.date}>{currentDate}</Text>
-          </View>
-        </View>
+      <StatusBar style="dark" />
+      <LinearGradient colors={['#E3F2FD', '#FFFFFF']} style={styles.gradient}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+          <Ionicons name="arrow-back" size={24} color="#4CAF50" />
+        </TouchableOpacity>
+        <StatusBar style="light" />
+         <LinearGradient
+                colors={['#2196F3', '#64B5F6']}
+                style={styles.header}
+              >
+                <Text style={styles.headerText}>Child Allergies</Text>
+              </LinearGradient>
+        {loading ? (
+          <ActivityIndicator size="large" color="#4CAF50" style={styles.loader} />
+        ) : (
+          <>
+            <Text style={styles.sectionTitle}>Allergies</Text>
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemText}>{data.allergies}</Text>
+            </View>
+            <Text style={styles.sectionTitle}>Born Diseases</Text>
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemText}>{data.bornDiseases}</Text>
+            </View>
+          </>
+        )}
       </LinearGradient>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-          {loading ? (
-            <Text style={styles.loadingText}>Loading health data...</Text>
-          ) : (
-            <>
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Allergies of the child</Text>
-                  <MaterialCommunityIcons name="allergy" size={24} color='#2196F3'/>
-                </View>
-                <View style={styles.infoContainer}>
-                  {healthData.allergies.map((allergy, index) => (
-                    <Text key={index} style={styles.infoText}>• {allergy}</Text>
-                  ))}
-                </View>
-              </View>
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Congenital diseases of the child</Text>
-                  <MaterialCommunityIcons name="dna" size={24} color="#2196F3" />
-                </View>
-                <View style={styles.infoContainer}>
-                  {healthData.diseases.map((disease, index) => (
-                    <Text key={index} style={styles.infoText}>• {disease}</Text>
-                  ))}
-                </View>
-              </View>
-            </>
-          )}
-        </Animated.View>
-      </ScrollView>
-      <CFooter/>
     </View>
   );
 };
@@ -131,78 +77,67 @@ const KidAllergy: React.FC<{ navigation: any }> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#FFFFFF',
+  },
+  gradient: {
+    flex: 1,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 30,
+    left: 20,
+    zIndex: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    padding: 8,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#388E3C',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  loader: {
+    marginTop: 40,
   },
   header: {
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 20,
+    borderRadius:15,
   },
-  profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileImage: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    marginRight: 15,
-  },
-  greeting: {
-    fontSize: 18,
-    fontFamily: 'Poppins_600SemiBold',
+  headerText: {
+    fontSize: 24,
+    fontFamily: 'Poppins_700Bold',
     color: '#fff',
+    textAlign: 'center',
   },
-  date: {
-    fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    color: '#fff',
-    opacity: 0.8,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 20,
-  },
-  content: {
-    padding: 20,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: 'Poppins_600SemiBold',
-    color: '#333',
-  },
-  infoContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
+  itemContainer: {
+    backgroundColor: '#F1F8E9',
     padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  infoText: {
-    fontSize: 16,
-    fontFamily: 'Poppins_400Regular',
-    color: '#333',
-    marginBottom: 5,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontFamily: 'Poppins_400Regular',
-    color: '#666',
-    textAlign: 'center',
+  itemText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#4CAF50',
   },
 });
 
 export default KidAllergy;
-
