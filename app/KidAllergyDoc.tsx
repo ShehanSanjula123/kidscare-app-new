@@ -4,11 +4,10 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
-import axios from 'axios';
 import api from './axiosConfig';
-import CFooter from '@/components/CFooter';
+import DFooter from '@/components/DFooter';
 
-const KidAllergy: React.FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
+const KidAllergyDoc: React.FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
   const { childId } = route.params; // Retrieve childId from route params
   const [data, setData] = useState({ allergies: '', bornDiseases: '' });
   const [loading, setLoading] = useState(true);
@@ -17,7 +16,7 @@ const KidAllergy: React.FC<{ navigation: any, route: any }> = ({ navigation, rou
     // Fetch data from the backend
     const fetchData = async () => {
       try {
-        const response = await api.get(`/auth/child-profile/${childId}`);
+        const response = await api.patch(`/auth/child-profile-fields/${childId}`);
         const childProfile = response.data;
 
         if (childProfile) {
@@ -51,7 +50,7 @@ const KidAllergy: React.FC<{ navigation: any, route: any }> = ({ navigation, rou
         </TouchableOpacity>
         <StatusBar style="light" />
          <LinearGradient
-                colors={['#2196F3', '#64B5F6']}
+                colors={['#4c669f', '#3b5998', '#192f6a']}
                 style={styles.header}
               >
                 <Text style={styles.headerText}>Child Allergies</Text>
@@ -71,7 +70,7 @@ const KidAllergy: React.FC<{ navigation: any, route: any }> = ({ navigation, rou
           </>
         )}
       </LinearGradient>
-      <CFooter/>
+      <DFooter/>
     </View>
   );
 };
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'ios' ? 60 : 30,
     left: 20,
     zIndex: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(225, 44, 44, 0.8)',
     borderRadius: 20,
     padding: 8,
   },
@@ -105,16 +104,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#388E3C',
+    color:'rgb(66, 102, 179)',
     marginTop: 35,
-    marginBottom: 15,
+    marginBottom: 10,
   },
   loader: {
     marginTop: 40,
   },
   header: {
     paddingTop: 50,
-    paddingBottom: 30,
+    paddingBottom: 40,
     paddingHorizontal: 20,
     borderRadius:15,
   },
@@ -138,8 +137,8 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: 'rgb(92, 140, 246)',
   },
 });
 
-export default KidAllergy;
+export default KidAllergyDoc;

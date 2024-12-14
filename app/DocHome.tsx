@@ -87,7 +87,7 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
     <TouchableOpacity
       style={styles.patientCard}
       activeOpacity={0.7}
-      onPress={() => navigation.navigate('KidProfDoc', { patientId: item.id, patientName: item.name})}
+      onPress={() => navigation.navigate('KidProfDoc', { patientId: item.id, patientName: item.name,childId:item.id})}
     >
       <LinearGradient
         colors={['#4c669f', '#3b5998', '#192f6a']}
