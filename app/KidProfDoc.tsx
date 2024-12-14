@@ -11,6 +11,7 @@ const { width } = Dimensions.get('window');
 
 const KidProfDoc: React.FC<{ navigation: any; route:any }> = ({ navigation,route }) => {
   const {patientName} = route.params;
+  const {childId} = route.params;
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -38,16 +39,16 @@ const KidProfDoc: React.FC<{ navigation: any; route:any }> = ({ navigation,route
   };
 
   const menuItems = [
-    { title: 'Allergies & Congenital Diseases', icon: 'medical', screen: 'KidAllergy', color: '#4c669f'},
-    { title: 'Vaccination Schedule', icon: 'calendar', screen: 'KidVac', color: '#3b5998' },
-    { title: 'Medical Records', icon: 'document-text', screen: 'KidRecords', color: '#3b5998' },
+    { title: 'Allergies & Congenital Diseases', icon: 'medical', screen: 'KidAllergyDoc', color: '#4c669f'},
+    { title: 'Vaccination Schedule', icon: 'calendar', screen: 'VacSheduleDoc', color: '#3b5998' },
+    { title: 'Medical Records', icon: 'document-text', screen: 'MRecordsDChild', color: '#3b5998' },
     { title: 'BMI Chart', icon: 'stats-chart', screen: 'BMI', color: '#3b5998' },
   ];
 
   const handlePress = (screen: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    navigation.navigate(screen);
-  };
+     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+     navigation.navigate(screen,  { childId});
+   }; 
 
   return (
     <View style={styles.container}>

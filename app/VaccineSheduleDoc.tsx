@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, Platform } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TextInput, Button, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
 import api from './axiosConfig';
-import CFooter from '@/components/CFooter';
+import DFooter from '@/components/DFooter';
 
-const VaccineSchedule: React.FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
+const VaccineScheduleDoc: React.FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
   const { childId } = route.params; // Retrieve childId from route params
   const [data, setData] = useState({ vaccinesGiven: '', vaccinesToBeGiven: '' });
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     // Fetch data from the backend
     const fetchData = async () => {
       try {
-        const response = await api.get(`/auth/child-profile/${childId}`);
+        const response = await api.patch(`/auth/child-profile-fields/${childId}`);
         const childProfile = response.data;
         if (childProfile) {
           setData({
@@ -35,6 +37,25 @@ const VaccineSchedule: React.FC<{ navigation: any, route: any }> = ({ navigation
     fetchData();
   }, [childId]);
 
+  const handleSave = async () => {
+    try {
+      const newData = {
+        vaccinesGiven: data.vaccinesGiven.trim(), // Ensures no leading/trailing spaces
+        vaccinesToBeGiven: data.vaccinesToBeGiven.trim(),
+      };
+      // Send PATCH request to update the backend with only the new data
+      const response = await api.patch(`/auth/child-profile-fields/${childId}`, data);
+      if (response.status === 200) {
+        setData(data); // Update local state with the new data
+        setIsEditing(false);
+      } else {
+        console.error('Failed to update data. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
+  };
+
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -48,7 +69,7 @@ const VaccineSchedule: React.FC<{ navigation: any, route: any }> = ({ navigation
         </TouchableOpacity>
         <StatusBar style="light" />
         <LinearGradient
-          colors={['#2196F3', '#64B5F6']}
+          colors={['#4c669f', '#3b5998', '#192f6a']}
           style={styles.header}
         >
           <Text style={styles.headerText}>Vaccine Schedule</Text>
@@ -58,17 +79,40 @@ const VaccineSchedule: React.FC<{ navigation: any, route: any }> = ({ navigation
         ) : (
           <>
             <Text style={styles.sectionTitle}>Vaccines Given</Text>
-            <View style={styles.itemContainer}>
-              <Text style={styles.itemText}>{data.vaccinesGiven}</Text>
-            </View>
+            {isEditing ? (
+              <TextInput
+                style={styles.input}
+                value={data.vaccinesGiven}
+                onChangeText={(text) => setData({ ...data, vaccinesGiven: text })}
+              />
+            ) : (
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemText}>{data.vaccinesGiven}</Text>
+              </View>
+            )}
+
             <Text style={styles.sectionTitle}>Vaccines To Be Given</Text>
-            <View style={styles.itemContainer}>
-              <Text style={styles.itemText}>{data.vaccinesToBeGiven}</Text>
-            </View>
+            {isEditing ? (
+              <TextInput
+                style={styles.input}
+                value={data.vaccinesToBeGiven}
+                onChangeText={(text) => setData({ ...data, vaccinesToBeGiven: text })}
+              />
+            ) : (
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemText}>{data.vaccinesToBeGiven}</Text>
+              </View>
+            )}
+
+            {isEditing ? (
+              <Button title="Save" onPress={handleSave} color='rgba(20, 92, 248, 0.8)' />
+            ) : (
+              <Button title="Edit" onPress={() => setIsEditing(true)} color='rgba(21, 87, 229, 0.8)' />
+            )}
           </>
         )}
       </LinearGradient>
-      <CFooter/>
+      <DFooter/>
     </View>
   );
 };
@@ -102,9 +146,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#388E3C',
+    color: '#4c669f',
     marginTop: 35,
-    marginBottom: 16,
+    marginBottom: 10,
   },
   loader: {
     marginTop: 40,
@@ -125,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F8E9',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -135,8 +179,17 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#4CAF50',
+    color: '#192f6a',
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#388E3C',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
 
-export default VaccineSchedule;
+export default VaccineScheduleDoc;

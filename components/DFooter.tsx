@@ -28,7 +28,7 @@ const DFooter: React.FC = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={() => navigation.navigate('VaccineDetails' as never)}
+        onPress={() => navigation.navigate('VacSheduleDoc' as never)}
       >
         <Ionicons name="medical-outline" size={24} color="white" />
         <Text style={styles.iconText}>Vaccine</Text>
