@@ -20,6 +20,10 @@ const vaccineData = [
   { name: 'OPV (Oral Polio Vaccine)', details: 'Prevents polio (poliomyelitis)', dose: '5 doses (0, 2, 4, 6, 18 months)', route: 'Oral' },
   { name: 'Pentavalent (DTP-HepB-Hib)', details: 'Combines protection against diphtheria, tetanus, pertussis, hepatitis B, and Haemophilus influenzae type b.', dose: '3 doses', route: 'Intramuscular' },
   { name: 'Rotavirus Vaccine', details: 'Prevents severe diarrhea caused by rotavirus', dose: '2 doses', route: 'Oral' },
+  { name: 'PCV (Pneumococcal Conjugate Vaccine)', details: 'Prevents pneumococcal diseases like pneumonia, meningitis', dose: '3 doses', route: 'Intramuscular' },
+  { name: 'Measles-Rubella (MR)', details: 'Protects against measles and rubella.', dose: '2 doses', route: 'Subcutaneous' },
+  { name: 'Japanese Encephalitis (JE)', details: 'Protects against Japanese encephalitis virus.', dose: '2 doses', route: 'Subcutaneous' },
+  { name: 'Td Vaccine', details: 'Protects against tetanus and diphtheria', dose: 'Single dose', route: 'Intramuscular' },
 ];
 
 export default function VaccineDetail() {
