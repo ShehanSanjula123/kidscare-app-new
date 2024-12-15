@@ -16,11 +16,10 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } fr
 const { width } = Dimensions.get('window');
 
 const vaccineData = [
-  { name: 'COVID-19', details: 'mRNA vaccine', dose: '0.3 mL', route: 'Intramuscular' },
-  { name: 'Influenza', details: 'Inactivated virus', dose: '0.5 mL', route: 'Intramuscular' },
-  { name: 'Hepatitis B', details: 'Recombinant vaccine', dose: '1.0 mL', route: 'Intramuscular' },
-  { name: 'MMR', details: 'Live attenuated virus', dose: '0.5 mL', route: 'Subcutaneous' },
-  { name: 'Tdap', details: 'Toxoid/inactivated bacteria', dose: '0.5 mL', route: 'Intramuscular' },
+  { name: 'BCG', details: 'Protects against severe tuberculosis (TB)', dose: 'Single dose', route: 'Intradermal' },
+  { name: 'OPV (Oral Polio Vaccine)', details: 'Prevents polio (poliomyelitis)', dose: '5 doses (0, 2, 4, 6, 18 months)', route: 'Oral' },
+  { name: 'Pentavalent (DTP-HepB-Hib)', details: 'Combines protection against diphtheria, tetanus, pertussis, hepatitis B, and Haemophilus influenzae type b.', dose: '3 doses', route: 'Intramuscular' },
+  { name: 'Rotavirus Vaccine', details: 'Prevents severe diarrhea caused by rotavirus', dose: '2 doses', route: 'Oral' },
 ];
 
 export default function VaccineDetail() {
