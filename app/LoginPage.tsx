@@ -100,7 +100,7 @@ export default function LoginScreen() {
       >
         <StatusBar style="dark" />
         <LinearGradient
-          colors={['#F0F4F8', '#E2E8F0', '#CBD5E0']}
+          colors={['#03B8FF','#FFFFFF']}
           style={styles.gradient}
         >
           <Animated.View style={[styles.loginContainer, { opacity: fadeAnim }]}>
