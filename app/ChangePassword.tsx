@@ -64,7 +64,7 @@ const ChangePassword: React.FC = () => {
       style={styles.container}
     >
       <LinearGradient
-        colors={['#FFFFFF', '#FAFDFB']}
+        colors={['#03B8FF','#FFFFFF']}
         style={styles.background}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -225,4 +225,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ChangePassword
+export default ChangePassword;
