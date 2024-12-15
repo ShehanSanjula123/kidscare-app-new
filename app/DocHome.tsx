@@ -177,6 +177,10 @@ const DocHome: React.FC<{ navigation: any }> = ({ navigation }) => {
               <Icon name="log-out-outline" size={24} color="#4c669f" />
               <Text style={styles.menuItemText}>Logout</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem}  onPress={() => navigation.navigate('ChangeP')}>
+              <Icon name="log-out-outline" size={24} color="#4c669f" />
+              <Text style={styles.menuItemText}>Change Password</Text>
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
