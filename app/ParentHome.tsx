@@ -250,5 +250,5 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ParentHome
+export default ParentHome;
 

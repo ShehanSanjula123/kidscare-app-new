@@ -41,7 +41,7 @@ export default function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://192.168.107.100:3000/auth/forgot-password', {
+      const response = await fetch('http://192.168.39.100:3000/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,6 +68,7 @@ export default function ForgotPassword() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={['#1A2980', '#26D0CE']} style={styles.background}>
+        
         <View style={styles.content}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color="white" />

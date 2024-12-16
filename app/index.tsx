@@ -20,6 +20,7 @@ import KidAllergyDoc from './KidAllergyDoc';
 import VaccineScheduleDoc from './VaccineSheduleDoc';
 import MRecordsPChild from './MRecordsPChild';
 import MRecordsDChild from './MRecordsDChild';
+import BMIChart from './BMIChart';
 
 
 
@@ -51,9 +52,10 @@ const index = () => {
       <Stack.Screen name='VacSheduleDoc' component={VaccineScheduleDoc}/>
       <Stack.Screen name='MRecordsPChild' component={MRecordsPChild}/>
       <Stack.Screen name='MRecordsDChild' component={MRecordsDChild}/>
+      <Stack.Screen name='BMIChart' component={BMIChart}/>
     </Stack.Navigator>
  
   )
 }
 
-export default index
+export default index;

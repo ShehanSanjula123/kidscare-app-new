@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, Platform } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TextInput, Platform, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import api from './axiosConfig';
 import DFooter from '@/components/DFooter';
 
 const MRecordsDChild: React.FC<{ navigation: any, route: any }> = ({ navigation, route }) => {
-  const { childId } = route.params; // Retrieve childId from route params
+  const { childId } = route.params;
   const [data, setData] = useState({ records: '' });
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedRecords, setEditedRecords] = useState('');
 
   useEffect(() => {
-    // Fetch data from the backend
     const fetchData = async () => {
       try {
         const response = await api.patch(`/auth/child-profile-fields/${childId}`);
@@ -22,8 +23,8 @@ const MRecordsDChild: React.FC<{ navigation: any, route: any }> = ({ navigation,
         if (childProfile) {
           setData({
             records: childProfile.medicalRecords || 'No records specified',
-
           });
+          setEditedRecords(childProfile.medicalRecords || 'No records specified');
         } else {
           console.error('Child profile not found.');
         }
@@ -41,6 +42,32 @@ const MRecordsDChild: React.FC<{ navigation: any, route: any }> = ({ navigation,
     navigation.goBack();
   };
 
+  const handleEditPress = () => {
+    setIsEditing(true);
+  };
+
+  const handleSavePress = async () => {
+    try {
+      setLoading(true);
+      const response = await api.patch(`/auth/child-profile-fields/${childId}`, {
+        medicalRecords: editedRecords,
+      });
+
+      if (response.status === 200) {
+        setData({ records: editedRecords });
+        setIsEditing(false);
+        Alert.alert('Success', 'Medical records updated successfully');
+      } else {
+        Alert.alert('Error', 'Failed to update medical records');
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+      Alert.alert('Error', 'An error occurred while saving the medical records');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
@@ -49,25 +76,45 @@ const MRecordsDChild: React.FC<{ navigation: any, route: any }> = ({ navigation,
           <Ionicons name="arrow-back" size={24} color="#4CAF50" />
         </TouchableOpacity>
         <StatusBar style="light" />
-         <LinearGradient
-                colors={['#4c669f', '#3b5998', '#192f6a']}
-                style={styles.header}
-              >
-                <Text style={styles.headerText}>Child Medical Records</Text>
-              </LinearGradient>
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']}
+          style={styles.header}
+        >
+          <Text style={styles.headerText}>Child Medical Records</Text>
+        </LinearGradient>
+        <ScrollView>
         {loading ? (
           <ActivityIndicator size="large" color="#4CAF50" style={styles.loader} />
         ) : (
           <>
             <Text style={styles.sectionTitle}>Medical Records</Text>
             <View style={styles.itemContainer}>
-              <Text style={styles.itemText}>{data.records}</Text>
+              {isEditing ? (
+                <TextInput
+                  style={[styles.itemText, styles.input]}
+                  value={editedRecords}
+                  onChangeText={setEditedRecords}
+                  multiline
+                />
+              ) : (
+                <Text style={styles.itemText}>{data.records}</Text>
+              )}
             </View>
-            
+            {isEditing ? (
+              <TouchableOpacity style={styles.editButton} onPress={handleSavePress}>
+                <Text style={styles.editButtonText}>Save</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
+                <Text style={styles.editButtonText}>Edit</Text>
+              </TouchableOpacity>
+            )}
           </>
         )}
+        </ScrollView>
       </LinearGradient>
-      <DFooter/>
+      
+      <DFooter />
     </View>
   );
 };
@@ -101,7 +148,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color:'rgb(66, 102, 179)',
+    color: 'rgb(66, 102, 179)',
     marginTop: 45,
     marginBottom: 30,
   },
@@ -112,7 +159,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 40,
     paddingHorizontal: 20,
-    borderRadius:15,
+    borderRadius: 15,
   },
   headerText: {
     fontSize: 24,
@@ -136,6 +183,25 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'rgb(92, 140, 246)',
   },
+  input: {
+    borderWidth: 1,
+    borderColor: 'rgb(92, 140, 246)',
+    borderRadius: 5,
+    padding: 10,
+  },
+  editButton: {
+    backgroundColor: 'rgb(66, 102, 179)',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  editButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default MRecordsDChild;
+

@@ -1,173 +1,144 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
-const { width } = Dimensions.get('window');
-
 const vaccineData = [
-  { name: 'COVID-19', details: 'mRNA vaccine', dose: '0.3 mL', route: 'Intramuscular' },
-  { name: 'Influenza', details: 'Inactivated virus', dose: '0.5 mL', route: 'Intramuscular' },
-  { name: 'Hepatitis B', details: 'Recombinant vaccine', dose: '1.0 mL', route: 'Intramuscular' },
-  { name: 'MMR', details: 'Live attenuated virus', dose: '0.5 mL', route: 'Subcutaneous' },
-  { name: 'Tdap', details: 'Toxoid/inactivated bacteria', dose: '0.5 mL', route: 'Intramuscular' },
+  { name: 'OPV (Oral Polio Vaccine)', details: 'Prevents polio (poliomyelitis)', dose: '5 doses (0, 2, 4, 6, 18 months)', route: 'Oral' },
+  { name: 'Pentavalent (DTP-HepB-Hib)', details: 'Combines protection against diphtheria, tetanus, pertussis, hepatitis B, and Haemophilus influenzae type b.', dose: '3 doses', route: 'Intramuscular' },
+  { name: 'Rotavirus Vaccine', details: 'Prevents severe diarrhea caused by rotavirus', dose: '2 doses', route: 'Oral' },
+  { name: 'PCV (Pneumococcal Conjugate Vaccine)', details: 'Prevents pneumococcal diseases like pneumonia, meningitis', dose: '3 doses', route: 'Intramuscular' },
+  { name: 'Measles-Rubella (MR)', details: 'Protects against measles and rubella.', dose: '2 doses', route: 'Subcutaneous' },
+  { name: 'Japanese Encephalitis (JE)', details: 'Protects against Japanese encephalitis virus.', dose: '2 doses', route: 'Subcutaneous' },
+  { name: 'Td Vaccine', details: 'Protects against tetanus and diphtheria', dose: 'Single dose', route: 'Intramuscular' },
 ];
 
-export default function VaccineDetail() {
-  const [searchQuery, setSearchQuery] = useState('');
+const VacDetails: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
 
-  const filteredVaccines = vaccineData.filter(vaccine =>
-    vaccine.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const fadeAnim = new Animated.Value(0);
-
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
   if (!fontsLoaded) {
     return null;
   }
 
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#2196F3', '#64B5F6']}
-        style={styles.header}
-      >
+      <StatusBar style="light" />
+      <LinearGradient colors={['#2196F3', '#64B5F6']} style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
         <Text style={styles.headerText}>Vaccine Details</Text>
       </LinearGradient>
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={24} color="#666" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search vaccines..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-      <ScrollView horizontal style={styles.tableContainer}>
-        <View>
-          <View style={styles.row}>
-            <Text style={styles.headerCell}>Vaccine</Text>
-            <Text style={styles.headerCell}>Details</Text>
-            <Text style={styles.headerCell}>Dose</Text>
-            <Text style={styles.headerCell}>Route</Text>
-          </View>
-          <ScrollView>
-            {filteredVaccines.map((vaccine, index) => (
-              <Animated.View
-                key={index}
-                style={[
-                  styles.row,
-                  {
-                    opacity: fadeAnim,
-                    transform: [
-                      {
-                        translateY: fadeAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [50, 0],
-                        }),
-                      },
-                    ],
-                  },
-                ]}
-              >
-                <TouchableOpacity style={styles.card}>
-                  <Text style={styles.cell}>{vaccine.name}</Text>
-                  <Text style={styles.cell}>{vaccine.details}</Text>
-                  <Text style={styles.cell}>{vaccine.dose}</Text>
-                  <Text style={styles.cell}>{vaccine.route}</Text>
-                </TouchableOpacity>
-              </Animated.View>
-            ))}
-          </ScrollView>
+      <ScrollView style={styles.content}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.columnHeader}>Vaccine</Text>
+          <Text style={styles.columnHeader}>Details</Text>
+          <Text style={styles.columnHeader}>Dose</Text>
+          <Text style={styles.columnHeader}>Route</Text>
         </View>
+        {vaccineData.map((vaccine, index) => (
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.cellName}>{vaccine.name}</Text>
+            <Text style={styles.cellDetails}>{vaccine.details}</Text>
+            <Text style={styles.cellDose}>{vaccine.dose}</Text>
+            <Text style={styles.cellRoute}>{vaccine.route}</Text>
+          </View>
+        ))}
       </ScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#F0F4F8',
   },
   header: {
-    paddingTop: 60,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 40,
+    left: 20,
+    zIndex: 10,
   },
   headerText: {
     fontSize: 24,
     fontFamily: 'Poppins_700Bold',
-    color: '#fff',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginTop: 20,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    margin: 10,
-    paddingHorizontal: 15,
-    elevation: 3,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
+  content: {
     flex: 1,
-    height: 50,
-    fontFamily: 'Poppins_400Regular',
+    padding: 20,
   },
-  tableContainer: {
-    flex: 1,
-    marginTop: 10,
-  },
-  row: {
+  tableHeader: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: '#E3E8F0',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    marginBottom: 1,
   },
-  headerCell: {
-    width: width * 0.4,
-    padding: 15,
+  columnHeader: {
+    flex: 1,
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: 16,
-    backgroundColor: '#e7e7e7',
+    fontSize: 14,
+    color: '#3b5998',
+    textAlign: 'center',
   },
-  card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    margin: 5,
+  tableRow: {
+    flexDirection: 'column',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    marginBottom: 1,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
     elevation: 2,
   },
-  cell: {
-    width: width * 0.4,
-    padding: 15,
+  cellName: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 16,
+    color: '#3b5998',
+    marginBottom: 5,
+  },
+  cellDetails: {
     fontFamily: 'Poppins_400Regular',
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 5,
+  },
+  cellDose: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  cellRoute: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 14,
+    color: '#666',
   },
 });
+
+export default VacDetails;
 

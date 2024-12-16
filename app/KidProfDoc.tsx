@@ -5,7 +5,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import * as Haptics from 'expo-haptics';
-import DFooter from '@/components/DFooter';
 
 const { width } = Dimensions.get('window');
 
@@ -42,7 +41,7 @@ const KidProfDoc: React.FC<{ navigation: any; route:any }> = ({ navigation,route
     { title: 'Allergies & Congenital Diseases', icon: 'medical', screen: 'KidAllergyDoc', color: '#4c669f'},
     { title: 'Vaccination Schedule', icon: 'calendar', screen: 'VacSheduleDoc', color: '#3b5998' },
     { title: 'Medical Records', icon: 'document-text', screen: 'MRecordsDChild', color: '#3b5998' },
-    { title: 'BMI Chart', icon: 'stats-chart', screen: 'BMI', color: '#3b5998' },
+    { title: 'BMI Chart', icon: 'stats-chart', screen: 'BMIChart', color: '#3b5998' },
   ];
 
   const handlePress = (screen: string) => {

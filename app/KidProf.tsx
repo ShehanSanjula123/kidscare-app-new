@@ -99,14 +99,13 @@ const KidProf: React.FC<{ navigation: any }> = ({ navigation }) => {
 const ParentTop = ({ parentName }: { parentName: string }) => {
   const currentDate = formatDate(new Date().toISOString())
   return (
-    <View style={styles.topContainer}>
-      <Image style={styles.profileImage} source={require('../assets/img/parent.jpg')} />
-      <View style={styles.textContainer}>
-        <Text style={styles.greeting}>Hello, {parentName}</Text>
-        <Text style={styles.date}>{currentDate}</Text>
-      </View>
-      
-    </View>
+     <LinearGradient colors={['#2196F3', '#64B5F6']} style={styles.topContainer}>
+          <Image style={styles.profileImage} source={require('../assets/img/parent.jpg')} />
+          <View style={styles.textContainer}>
+            <Text style={styles.greeting}>Hello, {parentName}</Text>
+            <Text style={styles.date}>{currentDate}</Text>
+          </View>
+        </LinearGradient>
   )
 }
 
@@ -158,8 +157,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    paddingTop: Platform.OS === 'ios' ? 50 : 20,
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    paddingTop: Platform.OS === 'ios' ? 60 : 30,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
@@ -168,7 +166,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
-    borderColor: '#4CAF50',
+    borderColor: '#FFFFFF',
   },
   textContainer: {
     flex: 1,
@@ -176,12 +174,13 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2196F3',
+    fontFamily: 'Poppins_700Bold',
+    color: '#FFFFFF',
   },
   date: {
     fontSize: 16,
-    color: '#4CAF50',
+    fontFamily: 'Poppins_400Regular',
+    color: '#FFFFFF',
     marginTop: 5,
   },
   totalProfiles: {
@@ -267,5 +266,5 @@ const styles = StyleSheet.create({
   },
 })
 
-export default KidProf
+export default KidProf;
 
