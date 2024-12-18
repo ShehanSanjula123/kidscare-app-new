@@ -103,7 +103,7 @@ const KidTop: React.FC<{ name:string}> = ({name}) => {
           source={require('../assets/img/ellipse-52.png')}
         />
         <View style={styles.textContainer}>
-          <Text style={styles.greeting}>Hello, {name}</Text>
+          <Text style={styles.greeting}>{name}</Text>
           <Text style={styles.date}>{currentDate}</Text>
         </View>
       </LinearGradient>
